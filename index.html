@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Kyle Bonenfant, DVM candidate at Colorado State University: emergency medicine experience, clinical tools, teaching, and leadership.">
+<title>Kyle Bonenfant</title>
+<link rel="icon" href="assets/kyle.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one clinical chart. A monitor-strip hero with a live ECG trace on ECG paper, then chart entries down a single column. Cedar warms the off-shift section. */
+:root {
+  --paper: #f6f8f9;
+  --card: #ffffff;
+  --ink: #13222a;
+  --muted: #56666e;
+  --line: #dde4e7;
+  --grid: #f0d2cf;
+  --grid-strong: #e6b4b0;
+  --trace: #1b5a6b;
+  --trace-soft: #e3eef1;
+  --cedar: #94532a;
+  --cedar-soft: #f6ebe3;
+  --display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+  --body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --wrap: 1080px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d1519; --card: #131f25; --ink: #e5eef1; --muted: #93a6ae; --line: #22323a;
+    --grid: #2b1d20; --grid-strong: #43292d; --trace: #6fc6d8; --trace-soft: #16313a;
+    --cedar: #d89a68; --cedar-soft: #2a1e16; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1519; --card: #131f25; --ink: #e5eef1; --muted: #93a6ae; --line: #22323a;
+  --grid: #2b1d20; --grid-strong: #43292d; --trace: #6fc6d8; --trace-soft: #16313a;
+  --cedar: #d89a68; --cedar-soft: #2a1e16; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 1rem/1.6 var(--body);
+  padding-inline: 16px;
+}
+a { color: var(--trace); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--trace); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: var(--wrap); margin-inline: auto; }
+.mono { font-family: var(--mono); font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
+
+/* ---------- top bar ---------- */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+  margin-inline: -16px; padding-inline: 16px;
+}
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.bar strong { font-family: var(--display); font-weight: 700; font-size: 1.05rem; }
+.bar nav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.bar nav a { color: var(--muted); text-decoration: none; font-size: .9rem; }
+.bar nav a:hover { color: var(--ink); }
+@media (max-width: 640px) { .bar nav { display: none; } }
+
+/* ---------- hero ---------- */
+.hero { padding-block: 56px 24px; display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 40px; align-items: center; }
+.hero .eyebrow { color: var(--trace); margin: 0 0 14px; }
+.hero h1 { font-family: var(--display); font-weight: 800; font-size: clamp(2.6rem, 7vw, 4.6rem); line-height: .98; letter-spacing: -.02em; margin: 0 0 18px; text-wrap: balance; }
+.hero p.lede { font-size: 1.15rem; max-width: 38em; margin: 0 0 24px; color: var(--ink); }
+.hero .photo { width: 100%; max-width: 260px; aspect-ratio: 1; object-fit: cover; border-radius: 50%; border: 6px solid var(--card); box-shadow: 0 0 0 1px var(--line); justify-self: end; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 999px; font: 600 .95rem var(--body); text-decoration: none; border: 1px solid var(--trace); cursor: pointer; }
+.btn.primary { background: var(--trace); color: var(--paper); }
+.btn.ghost { background: transparent; color: var(--trace); }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; gap: 24px; padding-block: 32px 16px; }
+  .hero .photo { order: -1; justify-self: start; max-width: 140px; }
+}
+
+/* ---------- monitor strip ---------- */
+.monitor {
+  position: relative; border: 1px solid var(--grid-strong); border-radius: 14px; overflow: hidden; height: 132px;
+  background-color: var(--card);
+  background-image:
+    linear-gradient(var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+}
+.monitor canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.vitals { position: absolute; right: 14px; top: 10px; display: flex; gap: 18px; background: var(--card); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); }
+.vitals span { color: var(--muted); }
+.vitals b { color: var(--trace); font-family: var(--mono); font-weight: 500; font-size: .95rem; margin-left: 6px; }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-block: 18px 8px; }
+.facts div { background: var(--card); padding: 14px 16px; min-width: 0; }
+.facts dt { color: var(--muted); margin: 0 0 4px; }
+.facts dd { margin: 0; font-family: var(--display); font-weight: 700; font-size: 1.15rem; }
+@media (max-width: 760px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- sections ---------- */
+section.block { padding-block: 64px 8px; scroll-margin-top: 64px; }
+.head { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; margin-bottom: 28px; align-items: end; }
+.head .mono { color: var(--trace); }
+.head h2 { font-family: var(--display); font-weight: 700; font-size: clamp(1.7rem, 3.6vw, 2.4rem); line-height: 1.08; margin: 0; text-wrap: balance; }
+.head p { margin: 10px 0 0; color: var(--muted); max-width: 40em; }
+@media (max-width: 760px) { .head { grid-template-columns: 1fr; gap: 8px; } }
+
+.chart { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; padding-block: 22px; border-top: 1px solid var(--line); }
+.chart .when { color: var(--muted); }
+.chart h3 { font-family: var(--display); font-weight: 700; font-size: 1.25rem; margin: 0; }
+.chart .role { color: var(--muted); margin: 2px 0 10px; font-style: italic; }
+.chart ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; max-width: 46em; }
+@media (max-width: 760px) { .chart { grid-template-columns: 1fr; gap: 6px; } }
+
+.chart ul.chips, .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; max-width: none; }
+.chips li { background: var(--trace-soft); color: var(--ink); border-radius: 999px; padding: 6px 13px; font-size: .9rem; }
+.chart ul.rot, .rot { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; max-width: none; }
+.rot li { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.rot li:last-child { border-bottom: 0; }
+.rot .tag { color: var(--muted); white-space: nowrap; }
+
+/* ---------- tools ---------- */
+.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.tool { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.tool .shot { aspect-ratio: 16 / 10; width: 100%; max-width: 100%; object-fit: cover; object-position: top left; border-bottom: 1px solid var(--line); display: block; background: var(--paper); }
+.tool .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.tool h3 { font-family: var(--display); font-weight: 700; font-size: 1.2rem; margin: 0; }
+.tool p { margin: 0; }
+.tool .why { color: var(--muted); font-size: .95rem; }
+.tool .specs { color: var(--trace); }
+.tool .open { margin-top: auto; font-weight: 600; }
+.tools.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .tools.three { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .tools, .tools.three { grid-template-columns: 1fr; } }
+
+/* ---------- workshop ---------- */
+.workshop { background: var(--cedar-soft); border-radius: 18px; padding: 32px; margin-top: 8px; }
+.workshop .head .mono { color: var(--cedar); }
+.gallery { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 200px 200px; gap: 10px; }
+.gallery img { width: 100%; height: 100%; max-width: 100%; object-fit: cover; border-radius: 10px; display: block; }
+.gallery img:first-child { grid-row: span 2; }
+.gallery img:nth-child(4) { grid-column: span 2; }
+@media (max-width: 640px) {
+  .workshop { padding: 20px; }
+  .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .gallery img { aspect-ratio: 1; height: auto; }
+  .gallery img:first-child, .gallery img:nth-child(4) { grid-row: auto; grid-column: span 2; aspect-ratio: 4 / 3; }
+}
+
+/* ---------- contact ---------- */
+.contact { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.contact .item { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; min-width: 0; }
+.contact .item dt { color: var(--muted); margin-bottom: 6px; }
+.contact .item dd { margin: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 600; overflow-wrap: anywhere; }
+.copy { font: 500 .78rem var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--trace); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; flex-shrink: 0; }
+@media (max-width: 760px) { .contact { grid-template-columns: 1fr; } }
+
+footer { padding-block: 56px 40px; color: var(--muted); font-size: .9rem; }
+</style>
+<style>img{max-width:100%} [hidden]{display:none!important}</style>
+</head>
+<body>
+
+
+<header class="bar">
+  <div class="wrap">
+    <strong>Kyle Bonenfant</strong>
+    <nav aria-label="Sections">
+      <a href="#emergency">Emergency</a>
+      <a href="#tools">Clinical tools</a>
+      <a href="#teaching">Teaching</a>
+      <a href="#leadership">Leadership</a>
+      <a href="#workshop">Workshop</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" aria-labelledby="name">
+    <div>
+      <p class="eyebrow mono">DVM candidate · Class of 2027 · Colorado State University</p>
+      <h1 id="name">Kyle Bonenfant</h1>
+      <p class="lede">I'm training for a career in small animal emergency and critical care. I've worked in an emergency hospital since 2025, and I build free clinical tools for the people working the floor.</p>
+      <div class="actions">
+        <a class="btn primary" href="#tools">See the tools</a>
+        <a class="btn ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+    <img class="photo" src="assets/kyle.jpg" alt="Portrait of Kyle Bonenfant in a white coat with a stethoscope">
+  </section>
+
+  <div class="monitor" role="img" aria-label="A steady ECG trace in normal sinus rhythm">
+    <canvas id="ecg"></canvas>
+    <div class="vitals mono" aria-hidden="true"><span>HR<b>72</b></span><span>Rhythm<b>NSR</b></span></div>
+  </div>
+
+  <dl class="facts">
+    <div><dt class="mono">DVM GPA</dt><dd>4.0</dd></div>
+    <div><dt class="mono">Emergency hospital</dt><dd>Since Jun 2025</dd></div>
+    <div><dt class="mono">Member</dt><dd>VECCS</dd></div>
+    <div><dt class="mono">Hometown</dt><dd>Carlisle, MA</dd></div>
+  </dl>
+
+  <!-- ===================== Emergency ===================== -->
+  <section class="block" id="emergency" aria-labelledby="em-h">
+    <div class="head">
+      <p class="mono">Emergency medicine</p>
+      <div>
+        <h2 id="em-h">Where I want to build my career</h2>
+        <p>My clinical year is built around emergency and critical care, and my job outside school is in an emergency hospital.</p>
+      </div>
+    </div>
+
+    <div class="chart">
+      <p class="when mono">Jun 2025 – Present</p>
+      <div>
+        <h3>PETS Emergency Hospital, Greeley, CO</h3>
+        <p class="role">Veterinary Assistant</p>
+        <ul>
+          <li>Triage walk-in emergencies and communicate findings to the veterinary team so treatment can begin promptly.</li>
+          <li>Run and monitor anesthesia and sedation; assist in surgery and manage post-operative recovery.</li>
+          <li>Administer IV fluids and medications, collect blood, and run in-house diagnostics.</li>
+          <li>Care for hospitalized and isolation patients; present estimates and update owners during emergencies.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chart">
+      <p class="when mono">2026 – 2027</p>
+      <div>
+        <h3>Clinical year, Colorado State University</h3>
+        <p class="role">Emergency-focused rotations, completed and scheduled</p>
+        <ul class="rot">
+          <li><span>Small Animal Urgent Care &amp; Emergency</span><span class="tag mono">Small animal</span></li>
+          <li><span>Small Animal Emergency &amp; Critical Care / ICU</span><span class="tag mono">Small animal</span></li>
+          <li><span>Anesthesia</span><span class="tag mono">Small animal</span></li>
+          <li><span>Soft Tissue Surgery</span><span class="tag mono">Small animal</span></li>
+          <li><span>Equine Medicine &amp; Emergency, including neonatal intensive care and colic</span><span class="tag mono">Equine</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="chart">
+      <p class="when mono">Hands-on</p>
+      <div>
+        <h3>Procedures I've performed</h3>
+        <p class="role">At PETS and on clinical rotations</p>
+        <ul class="chips">
+          <li>IV catheter placement</li>
+          <li>Blood gas and point-of-care labs</li>
+          <li>POCUS / FAST scans</li>
+          <li>CPR and arrest response</li>
+          <li>Anesthesia and sedation monitoring</li>
+          <li>Emergency triage</li>
+          <li>Fear Free handling</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Tools ===================== -->
+  <section class="block" id="tools" aria-labelledby="tools-h">
+    <div class="head">
+      <p class="mono">Clinical tools</p>
+      <div>
+        <h2 id="tools-h">Calculators built for the treatment room</h2>
+        <p>Free tools on desmoVet that take the manual math out of dosing, CRIs, and fluid plans. Everything runs in the browser, and every one is live.</p>
+      </div>
+    </div>
+
+    <div class="tools three">
+      <article class="tool">
+        <img class="shot" src="assets/shot_anesthesia.jpg" alt="Screenshot of the Small Animal Anesthesia Calculator dose table">
+        <div class="body">
+          <h3>Small Animal Anesthesia Calculator</h3>
+          <p class="specs mono">23 drugs · CRIs · protocol sheets</p>
+          <p>Weight-based dosing with ranges, CRI rates including dopamine and dobutamine, a feline ketamine–dexmedetomidine–opioid reference, and a printable protocol sheet from premedication through local blocks.</p>
+          <p class="why">Built so a dose or CRI rate is one weight entry away during a busy shift.</p>
+          <a class="open" href="https://desmovet.com/anesthesia/" target="_blank" rel="noopener">Open the calculator ↗</a>
+        </div>
+      </article>
+      <article class="tool">
+        <img class="shot" src="assets/shot_equicalc.jpg" alt="Screenshot of EquiCalc, an equine drug and fluid calculator hub">
+        <div class="body">
+          <h3>EquiCalc</h3>
+          <p class="specs mono">8 modules · fluids · GIR · TPN</p>
+          <p>Equine drug and fluid calculators: fluid deficits, shock and hypertonic boluses, glucose infusion rate, TPN formulation, lidocaine and MLK CRIs, induction and TIVA, and standing sedation.</p>
+          <p class="why">Built for equine critical care, where neonatal fluid, GIR, and CRI math comes up constantly.</p>
+          <a class="open" href="https://desmovet.com/equicalc/" target="_blank" rel="noopener">Open EquiCalc ↗</a>
+        </div>
+      </article>
+      <article class="tool">
+        <img class="shot" src="assets/shot_bloodwork.jpg" alt="Screenshot of the Bloodwork Abnormals lab-report formatter">
+        <div class="body">
+          <h3>Bloodwork Abnormals</h3>
+          <p class="specs mono">CBC · chem · gas · UA · coags</p>
+          <p>Paste raw analyzer output and get one sentence listing only the abnormal values, ready for the medical record.</p>
+          <p class="why">Runs entirely in the browser, so no patient data is uploaded anywhere.</p>
+          <a class="open" href="https://desmovet.com/bloodwork-abnormals.html" target="_blank" rel="noopener">Open the formatter ↗</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== Teaching ===================== -->
+  <section class="block" id="teaching" aria-labelledby="teach-h">
+    <div class="head">
+      <p class="mono">Teaching</p>
+      <div>
+        <h2 id="teach-h">Helping classmates learn hard material</h2>
+        <p>I coordinated CSU's DVM tutoring program, and when the university ended it, I relaunched peer tutoring on my own.</p>
+      </div>
+    </div>
+
+    <div class="chart">
+      <p class="when mono">Aug 2024 – 2026</p>
+      <div>
+        <h3>DVM Tutor Coordinator, Colorado State University</h3>
+        <ul>
+          <li>Hired, onboarded, and trained about 20 tutors per semester in group and one-on-one tutoring methods.</li>
+          <li>Led weekly group and one-on-one sessions for DVM students who needed extra support.</li>
+          <li>Served as the main contact between administration, faculty, tutors, and students.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="chart">
+      <p class="when mono">2026 – Present</p>
+      <div>
+        <h3>desmoVet Peer Tutoring</h3>
+        <ul>
+          <li>Relaunched peer tutoring for first- and second-year DVM students after the program was cut, matching students with tutors at no charge.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tools three" style="margin-top: 20px;">
+      <article class="tool">
+        <img class="shot" src="assets/shot_cardio.jpg" alt="Screenshot of the Cardiology Physiology Interactive Tutor">
+        <div class="body">
+          <h3>Cardiology Tutor</h3>
+          <p>Interactive pressure–volume loops, Frank–Starling, and ECG modules, with a quiz at the end.</p>
+          <a class="open" href="https://desmovet.com/cardio-tutor.html" target="_blank" rel="noopener">Open ↗</a>
+        </div>
+      </article>
+      <article class="tool">
+        <img class="shot" src="assets/shot_neuro.jpg" alt="Screenshot of the Veterinary Neurology learning guide">
+        <div class="body">
+          <h3>Neurology Tutor</h3>
+          <p>Lesion localization, seizures, vestibular disease, and TBI, with flashcards and case practice.</p>
+          <a class="open" href="https://desmovet.com/neuro-tutor.html" target="_blank" rel="noopener">Open ↗</a>
+        </div>
+      </article>
+      <article class="tool">
+        <img class="shot" src="assets/shot_navle.jpg" alt="Screenshot of the NAVLE Study Hub">
+        <div class="body">
+          <h3>NAVLE Study Hub</h3>
+          <p>37 chapters weighted to the ICVA blueprint and a 756-question practice bank.</p>
+          <a class="open" href="https://desmovet.com/navle/" target="_blank" rel="noopener">Open ↗</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== Leadership ===================== -->
+  <section class="block" id="leadership" aria-labelledby="lead-h">
+    <div class="head">
+      <p class="mono">Leadership</p>
+      <div>
+        <h2 id="lead-h">Leading teams, before and during vet school</h2>
+      </div>
+    </div>
+    <div class="chart">
+      <p class="when mono">2025 – 2026</p>
+      <div>
+        <h3>President, Theriogenology Society Student Chapter, CSU</h3>
+        <ul>
+          <li>Led the officer team and organized hands-on wet labs for chapter members.</li>
+          <li>Recruited speakers and managed the chapter budget.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="chart">
+      <p class="when mono">2018 – 2021</p>
+      <div>
+        <h3>Founder, Fraser Farm Goatscaping, Carlisle, MA</h3>
+        <ul>
+          <li>Built a goat-grazing service that was booked every season, and was named #5 on BostInno's Boston 25 Under 25 Entrepreneurs (2019).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="chart">
+      <p class="when mono">2018 – 2020</p>
+      <div>
+        <h3>Appointed Official, Town of Carlisle Agriculture Commission</h3>
+        <ul>
+          <li>Drafted the town's Right-to-Farm bylaw and helped mediate agriculture-related disputes.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Workshop ===================== -->
+  <section class="block" id="workshop" aria-labelledby="shop-h">
+    <div class="workshop">
+      <div class="head">
+        <p class="mono">Off shift</p>
+        <div>
+          <h2 id="shop-h">Fort Collins Cedar Works</h2>
+          <p>I build cedar planters by hand from boards I pick out at Cedar Supply in Fort Collins. The premium line uses Western Red Cedar with a hand-beveled cap.</p>
+        </div>
+      </div>
+      <div class="gallery">
+        <img src="assets/cedar_00.jpg" alt="A cedar planter full of flowers on a front porch in Fort Collins">
+        <img src="assets/cedar_08.jpg" alt="Premium cedar planter, angled view showing the beveled trim">
+        <img src="assets/cedar_16.jpg" alt="Close-up of the mitered corner joinery on a planter">
+        <img src="assets/cedar_12.jpg" alt="Three nested elevated cedar planters in different sizes">
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Contact ===================== -->
+  <section class="block" id="contact" aria-labelledby="contact-h">
+    <div class="head">
+      <p class="mono">Contact</p>
+      <div>
+        <h2 id="contact-h">Let's talk</h2>
+        <p>My CV and references are available on request.</p>
+      </div>
+    </div>
+    <dl class="contact">
+      <div class="item"><dt class="mono">Email</dt><dd><span id="email">kbonenfa@colostate.edu</span><button class="copy" type="button" data-copy="email">Copy</button></dd></div>
+      <div class="item"><dt class="mono">Phone</dt><dd><span id="phone">(978) 201-2690</span><button class="copy" type="button" data-copy="phone">Copy</button></dd></div>
+      <div class="item"><dt class="mono">Based in</dt><dd><span>Fort Collins, CO · from Carlisle, MA</span></dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <p>Kyle Bonenfant · DVM Candidate, Colorado State University · <a href="https://desmovet.com" target="_blank" rel="noopener">desmovet.com</a></p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  // Copy buttons
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = document.getElementById(btn.dataset.copy);
+      var text = el.textContent;
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
+      try {
+        navigator.clipboard.writeText(text).then(done, function () { select(el); });
+      } catch (e) { select(el); }
+    });
+  });
+  function select(el) {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+
+  // ECG trace
+  var canvas = document.getElementById('ecg');
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W = 0, H = 0, dpr = 1;
+  function size() {
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  // One beat of a stylized lead II complex, x in [0,1), returns amplitude
+  function beat(x) {
+    var g = function (c, w, a) { return a * Math.exp(-Math.pow((x - c) / w, 2)); };
+    return g(0.18, 0.035, 0.12)            // P
+         + g(0.30, 0.010, -0.10)           // Q
+         + g(0.33, 0.012, 1.0)             // R
+         + g(0.36, 0.012, -0.22)           // S
+         + g(0.58, 0.060, 0.28);           // T
+  }
+  var period = 1000 * 60 / 72;  // 72 bpm
+  var pxPerMs = 0.12;
+  function color() { return getComputedStyle(document.documentElement).getPropertyValue('--trace').trim() || '#1b5a6b'; }
+  function y(v) { return H * 0.66 - v * H * 0.5; }
+  function drawStatic() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = color(); ctx.lineWidth = 2; ctx.lineJoin = 'round';
+    ctx.beginPath();
+    for (var px = 0; px <= W; px++) {
+      var t = px / pxPerMs; var v = beat((t % period) / period);
+      px === 0 ? ctx.moveTo(px, y(v)) : ctx.lineTo(px, y(v));
+    }
+    ctx.stroke();
+  }
+  var start = performance.now();
+  function frame(now) {
+    var head = ((now - start) * pxPerMs) % W;  // sweep position
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = color(); ctx.lineWidth = 2; ctx.lineJoin = 'round';
+    ctx.beginPath();
+    var gap = 28, started = false;
+    for (var px = 0; px <= W; px++) {
+      if (px > head && px < head + gap) { started = false; continue; }
+      var tms = (now - start) - (head - px) / pxPerMs;
+      if (px > head) tms -= W / pxPerMs;
+      var v = beat((((tms % period) + period) % period) / period);
+      if (!started) { ctx.moveTo(px, y(v)); started = true; } else { ctx.lineTo(px, y(v)); }
+    }
+    ctx.stroke();
+    // bright sweep dot
+    var tH = now - start; var vH = beat(((tH % period) + period) % period / period);
+    ctx.fillStyle = color(); ctx.beginPath(); ctx.arc(head, y(vH), 3, 0, Math.PI * 2); ctx.fill();
+    requestAnimationFrame(frame);
+  }
+  size(); drawStatic();
+  window.addEventListener('resize', function () { size(); if (reduce) drawStatic(); });
+  if (!reduce) requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
